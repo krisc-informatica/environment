@@ -39,11 +39,18 @@ class HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: const <Widget>[
-            Text(
+          children: <Widget>[
+            const Text(
               'Aachen',
               style: TextStyle(color: Colors.amber, fontSize: 26),
             ),
+            Row(
+              children: [
+                const Text("Pollen"),
+                const Spacer(),
+                Image.asset("assets/images/aqi_101.png"),
+              ],
+            )
           ],
         ),
       ),
