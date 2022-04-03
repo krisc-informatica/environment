@@ -30,7 +30,6 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,12 +39,11 @@ class HomePageState extends State<HomePage> {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            const Text(
+          children: const <Widget>[
+            Text(
               'Aachen',
-              style: TextStyle(color: Colors.amber, fontSize: ),
+              style: TextStyle(color: Colors.amber, fontSize: 26),
             ),
-
           ],
         ),
       ),
