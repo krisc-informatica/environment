@@ -48,9 +48,16 @@ class HomePageState extends State<HomePage> {
               children: [
                 const Text("Pollen"),
                 const Spacer(),
+                Image.asset("assets/images/aqi_51.png"),
+              ],
+            ),
+            Row(
+              children: [
+                const Text("CO2"),
+                const Spacer(),
                 Image.asset("assets/images/aqi_101.png"),
               ],
-            )
+            ),
           ],
         ),
       ),
