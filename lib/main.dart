@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -30,6 +32,48 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  late Map pollen;
+  late Map air;
+
+  @override
+  void initState() {
+    getAmbeePollenData();
+    getAmbeeAirData();
+    super.initState();
+  }
+
+  void getAmbeePollenData() async {
+    var response = await Dio().get(
+      'https://api.ambeedata.com/latest/pollen/by-place?place=Aachen,Germany',
+      options: Options(
+        headers: {
+          'x-api-key':
+              '84e67d5c77574be4c21463c86642328114f156c59338b2b145894e282b9f073e',
+        },
+      ),
+    );
+    setState(() {
+      pollen = json.decode(response.toString());
+      print(pollen);
+    });
+  }
+
+  void getAmbeeAirData() async {
+    var response = await Dio().get(
+      'https://api.ambeedata.com/latest/by-city?city=Aachen,Germany',
+      options: Options(
+        headers: {
+          'x-api-key':
+              '84e67d5c77574be4c21463c86642328114f156c59338b2b145894e282b9f073e',
+        },
+      ),
+    );
+    setState(() {
+      air = json.decode(response.toString());
+      print(air);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,13 +92,15 @@ class HomePageState extends State<HomePage> {
               children: [
                 const Text("Pollen"),
                 const Spacer(),
-                Image.asset("assets/images/aqi_51.png"),
+                Text(pollen['data'][0]['Count']['tree_pollen'].toString()),
+                Image.asset("assets/images/aqi_201.png"),
               ],
             ),
             Row(
               children: [
-                const Text("CO2"),
+                const Text("CO"),
                 const Spacer(),
+                Text(air['stations'][0]['CO'].toString()),
                 Image.asset("assets/images/aqi_101.png"),
               ],
             ),
