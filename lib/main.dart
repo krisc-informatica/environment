@@ -1,5 +1,8 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
+import 'package:environment/model/air_quality.dart';
+import 'package:environment/model/pollen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -32,8 +35,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
-  late Map pollen;
-  late Map air;
+  Pollen? pollen;
+  AirQuality? air;
 
   @override
   void initState() {
@@ -43,34 +46,51 @@ class HomePageState extends State<HomePage> {
   }
 
   void getAmbeePollenData() async {
-    var response = await Dio().get(
+    Response<dynamic> response = await Dio().get(
       'https://api.ambeedata.com/latest/pollen/by-place?place=Aachen,Germany',
       options: Options(
         headers: {
           'x-api-key':
-              '84e67d5c77574be4c21463c86642328114f156c59338b2b145894e282b9f073e',
+              '14f758b0ca160e84fb249abaee682fcfd9b59e3ca4a2aa54f1e059987fde6c3f',
+          'Content-type': 'application/json',
+          // 'Authorization': 'Bearer 04d1368a451c32118df0b99c0f41629c'
         },
       ),
     );
+    if (kDebugMode) {
+      print(response.toString());
+    }
     setState(() {
-      pollen = json.decode(response.toString());
-      print(pollen);
+      // pollen = json.decode(response.toString());
+      var json = jsonDecode(response.toString());
+      pollen = Pollen.fromJson(json['data'][0]);
+      if (kDebugMode) {
+        print(pollen);
+      }
     });
   }
 
   void getAmbeeAirData() async {
     var response = await Dio().get(
-      'https://api.ambeedata.com/latest/by-city?city=Aachen,Germany',
+      'https://api.ambeedata.com/latest/by-city?city=Bocholt, Belgium',
       options: Options(
         headers: {
           'x-api-key':
-              '84e67d5c77574be4c21463c86642328114f156c59338b2b145894e282b9f073e',
+              '14f758b0ca160e84fb249abaee682fcfd9b59e3ca4a2aa54f1e059987fde6c3f',
+          'Content-type': 'application/json'
         },
       ),
     );
+    if (kDebugMode) {
+      print(response.toString());
+    }
     setState(() {
-      air = json.decode(response.toString());
-      print(air);
+      // air = json.decode(response.toString());
+      var json = jsonDecode(response.toString());
+      air = AirQuality.fromJson(json['stations'][0]);
+      if (kDebugMode) {
+        print(air);
+      }
     });
   }
 
@@ -92,7 +112,9 @@ class HomePageState extends State<HomePage> {
               children: [
                 const Text("Pollen"),
                 const Spacer(),
-                Text(pollen['data'][0]['Count']['tree_pollen'].toString()),
+                pollen != null
+                    ? Text(pollen.toString())
+                    : const Text('No Pollen data yet'),
                 Image.asset("assets/images/aqi_201.png"),
               ],
             ),
@@ -100,7 +122,9 @@ class HomePageState extends State<HomePage> {
               children: [
                 const Text("CO"),
                 const Spacer(),
-                Text(air['stations'][0]['CO'].toString()),
+                air != null
+                    ? Text(air.toString())
+                    : const Text('No AirQuality data yet'),
                 Image.asset("assets/images/aqi_101.png"),
               ],
             ),
